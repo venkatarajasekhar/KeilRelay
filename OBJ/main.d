@@ -47,3 +47,4 @@
 ..\obj\main.o: ..\HARDWARE\USART3\usart3.h
 ..\obj\main.o: ..\HARDWARE\KEY\key.h
 ..\obj\main.o: C:\Keil_v5\ARM\ARMCC\bin\..\include\string.h
+..\obj\main.o: relay.h

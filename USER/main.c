@@ -7,7 +7,8 @@
 #include "hc05.h" 	 
 #include "usart3.h" 	
 #include "key.h" 	 
-#include "string.h"	 
+#include "string.h"
+#include "relay.h"
 
 //ALIENTEK 探索者STM32F407开发板 扩展实验1
 //ATK-HC05蓝牙串口模块实验 -库函数版本
@@ -60,10 +61,12 @@ int main(void)
 	delay_init(168);      //初始化延时函数
 	uart_init(115200);		//初始化串口波特率为115200
 	
+	RELAY_Init(); 
 	usmart_dev.init(84); 		//初始化USMART		
 	LED_Init();					//初始化LED
 	KEY_Init();					//初始化按键
- 	LCD_Init();		 			//初始化LCD	  
+ 	LCD_Init();		 			//初始化LCD
+	              //初始化继电器
 	POINT_COLOR=RED;
 	LCD_ShowString(30,30,200,16,16,"ALIENTEK STM32F4 ^_^");	
 	LCD_ShowString(30,50,200,16,16,"HC05 BLUETOOTH COM TEST");	
@@ -144,6 +147,10 @@ int main(void)
 					LED1=0;	//打开LED1
 				if(strcmp((const char*)USART3_RX_BUF,"+LED1 OFF")==0)
 					LED1=1;//关闭LED1
+				if(strcmp((const char*)USART3_RX_BUF,"+JDQ ON")==0)
+					JDQ=0;//打开继电器
+				if(strcmp((const char*)USART3_RX_BUF,"+JDQ OFF")==0)
+					JDQ=1;//关闭继电器
 			}
  			LCD_ShowString(30,200,209,119,16,USART3_RX_BUF);//显示接收到的数据
  			USART3_RX_STA=0;	 
