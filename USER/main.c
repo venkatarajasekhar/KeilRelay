@@ -56,7 +56,8 @@ int main(void)
 	u8 sendmask=0;
 	u8 sendcnt=0;
 	u8 sendbuf[20];	  
-	u8 reclen=0;  
+	u8 reclen=0;
+	u8 SetVoltage = 0;
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置系统中断优先级分组2
 	delay_init(168);      //初始化延时函数
 	uart_init(115200);		//初始化串口波特率为115200
@@ -125,7 +126,8 @@ int main(void)
 			{
 				sprintf((char*)sendbuf,"ALIENTEK HC05 %d\r\n",sendcnt);
 	  			LCD_ShowString(30+40,160,200,16,16,sendbuf);	//显示发送数据	
-				u3_printf("ALIENTEK HC05 tenpertura: %d\r\n",sendcnt);		//发送到蓝牙模块
+				//u3_printf("ALIENTEK HC05 tenpertura: %d\r\n",sendcnt);		//发送到蓝牙模块
+				u3_printf("The current voltage is: %.2lf\r\n",(double)(SetVoltage/10.0));		//发送到蓝牙模块
 				sendcnt++;
 				if(sendcnt>99)
 					sendcnt=0;
@@ -143,14 +145,43 @@ int main(void)
 		  	USART3_RX_BUF[reclen]=0;	 	//加入结束符
 			if(reclen==9||reclen==8) 		//控制DS1检测
 			{
-				if(strcmp((const char*)USART3_RX_BUF,"+LED1 ON")==0)
-					LED1=0;	//打开LED1
-				if(strcmp((const char*)USART3_RX_BUF,"+LED1 OFF")==0)
-					LED1=1;//关闭LED1
-				if(strcmp((const char*)USART3_RX_BUF,"+JDQ ON")==0)
-					JDQ=0;//打开继电器
-				if(strcmp((const char*)USART3_RX_BUF,"+JDQ OFF")==0)
-					JDQ=1;//关闭继电器
+				if(strcmp((const char*)USART3_RX_BUF,"+LED1 ON")==0)  //开3.3v
+				{
+					LED1 = 0;	//打开LED1
+					JDQ1 = 1;
+					JDQ2 = 0;
+					JDQ3 = 0;
+					JDQ4 = 0;
+					SetVoltage = 33;
+				}
+				if(strcmp((const char*)USART3_RX_BUF,"+LED1 OFF")==0) //开 5.0v
+				{
+					LED1 = 0;//关闭LED1
+					JDQ1 = 0;
+					JDQ2 = 1;
+					JDQ3 = 0;
+					JDQ4 = 0;
+					SetVoltage = 50;	
+				}
+				if(strcmp((const char*)USART3_RX_BUF,"+JDQ3 ON")==0)  //开 9.0v
+				{
+					
+					LED1 = 0;	//打开LED1
+					JDQ1 = 0;
+					JDQ2 = 0;
+					JDQ3 = 1;
+					JDQ4 = 0;
+					SetVoltage = 90;
+				}
+				if(strcmp((const char*)USART3_RX_BUF,"+JDQ4 ON")==0)  //开 12.0v
+				{
+					LED1 = 0;	//打开LED1
+					JDQ1 = 0;
+					JDQ2 = 0;
+					JDQ3 = 0;
+					JDQ4 = 1;
+					SetVoltage = 120;
+				}
 			}
  			LCD_ShowString(30,200,209,119,16,USART3_RX_BUF);//显示接收到的数据
  			USART3_RX_STA=0;	 

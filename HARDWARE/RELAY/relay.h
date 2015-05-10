@@ -20,7 +20,11 @@
 
 
 //#define JDQ0 PFout(8)	// ¼ÌµçÆ÷
-#define JDQ PFout(8)
+#define JDQ PFout(7)
+#define JDQ1 PFout(1)
+#define JDQ2 PFout(2)
+#define JDQ3 PFout(3)
+#define JDQ4 PFout(4)
 
 void RELAY_Init(void);
 
